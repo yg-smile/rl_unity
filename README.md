@@ -8,7 +8,7 @@ Solve some Unity ML-Agent environments using deep reinforcement learning.
 <p float="left">
   <img src="https://user-images.githubusercontent.com/49927412/103163688-2082e000-47b6-11eb-9abc-a7dc7ffab8c1.gif" width="300" />
   <img src="https://user-images.githubusercontent.com/49927412/103163689-224ca380-47b6-11eb-807f-d2fc60baf3d0.gif" width="300" /> 
-  <img src="https://user-images.githubusercontent.com/49927412/103175564-ab4bf500-481f-11eb-8bb7-bdd12ef6863c.png" width="300" />
+  <img src="https://user-images.githubusercontent.com/49927412/103175606-fa922580-481f-11eb-9903-cb92c3028d3b.png" width="300" />
 </p>
 
 Run code to reproduce the results: ```run_sac.py```
