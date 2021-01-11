@@ -1,5 +1,5 @@
-from algos.sac import SAC
-from algos.buffer import ReplayBuffer
+from algos.maac import MAAC
+from algos.buffer import ReplayBufferEnsemble
 
 import numpy as np
 import torch
@@ -40,23 +40,26 @@ env = UnityToGymWrapper(unity_env)
 config = {
     'dim_obs': env_info[env_name].dim_obs,
     'dim_action': env_info[env_name].dim_action,
-    'dims_hidden_neurons': (200, 200),
+    'dims_hidden_neurons': (400, 400),
+    'M': 10,
+    'H': 10,
     'lr': 0.001,
-    'smooth': 0.99,
-    'discount': 0.9,
-    'alpha': 0.05,
+    'discount': 0.99,
+    'sig': 0.05,
     'batch_size': 64,
     'replay_buffer_size': 20000,
     'seed': 1,
     'max_episode': 1500,
+    'model_episode': 20,
 }
 
-sac = SAC(config)
-buffer = ReplayBuffer(config)
-train_writer = SummaryWriter(log_dir='tensorboard/sac_{env:}_{date:%Y-%m-%d_%H:%M:%S}'.format(
+maac = MAAC(config)
+buffer = ReplayBufferEnsemble(config)
+train_writer = SummaryWriter(log_dir='tensorboard/maac_{env:}_{date:%Y-%m-%d_%H:%M:%S}'.format(
                              env=env_name,
                              date=datetime.datetime.now()))
 
+model_episode = config['model_episode']
 steps = 0
 for i_episode in range(config['max_episode']):
     obs = env.reset()
@@ -67,19 +70,21 @@ for i_episode in range(config['max_episode']):
 
         obs_tensor = torch.tensor(obs).type(Tensor).to(device)
 
-        action = sac.act_probabilistic(obs_tensor[None, :]).detach().to("cpu").numpy()[0, :]
+        action = maac.act_probabilistic(obs_tensor[None, :]).detach().to("cpu").numpy()[0, :]
 
         next_obs, reward, done, info = env.step(action)
 
         print(reward)
-        
+
         buffer.append_memory(obs=obs_tensor.to(device),
                              action=torch.from_numpy(action).to(device),
                              reward=torch.from_numpy(np.array([reward])).to(device),
                              next_obs=torch.from_numpy(next_obs).type(Tensor).to(device),
                              done=done)
 
-        sac.update(buffer)
+        if i_episode > model_episode:
+            maac.update(buffer)
+            maac.model.update(buffer)
 
         t += 1
         steps += 1
