@@ -42,7 +42,7 @@ https://github.com/Unity-Technologies/ml-agents/tree/master/gym-unity
 
 ## Multiple agent support
 
-The current ```gym_unity``` unfortunately doesn't support training multiple agents in parallel to improve the sample collection efficiency. To run multiple agents side by side, a workaround is to: 1. comment out all the number of agents checks ```self._check_agents``` in the ```gym_unity/envs/__init__.py```; 2. allow the returns of all default observations and rewards in the ```_single_step()``` function.
+The current ```gym_unity``` unfortunately doesn't support training multiple agents in parallel. To run multiple agents side by side for improving the sample collection efficiency, a workaround is to: 1. comment out all the number of agents checks ```self._check_agents``` in the ```gym_unity/envs/__init__.py```; 2. allow the returns of all default observations and rewards in the ```_single_step()``` function.
 
 For example, by running 3 agents we can collect roughly three times more samples and improve the learning speed:
 <p float="left">
