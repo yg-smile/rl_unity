@@ -39,3 +39,13 @@ https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Learning-Enviro
 https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Learning-Environment-Executable.md
 3. Wrap the scene as a gym-like environment using gym_unity:
 https://github.com/Unity-Technologies/ml-agents/tree/master/gym-unity
+
+## Multiple agent support
+
+The current ```gym_unity``` unfortunately doesn't support training multiple agents in parallel. To run multiple agents side by side for improving the sample collection efficiency, a workaround is to: 1. comment out all the number of agents checks ```self._check_agents``` in the ```gym_unity/envs/__init__.py```; 2. allow the returns of all default observations and rewards in the ```_single_step()``` function.
+
+For example, by running 3 agents we can collect roughly three times more samples and improve the learning speed:
+<p float="left">
+  <img src="https://user-images.githubusercontent.com/49927412/105573552-3b903380-5d13-11eb-842b-37f1ab1d18ff.png" width="400" />
+</p>
+
